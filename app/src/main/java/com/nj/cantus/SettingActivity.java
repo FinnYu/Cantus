@@ -1,15 +1,16 @@
 package com.nj.cantus;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,6 +28,9 @@ public class SettingActivity extends AppCompatActivity
 
 	private ArrayList<Button> speeds = new ArrayList<>();
 	private ArrayList<Button> starts = new ArrayList<>();
+
+	private ArrayList<RadioButton> example_speeds = new ArrayList<>();
+	private ArrayList<RadioButton> example_starts = new ArrayList<>();
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -72,6 +76,20 @@ public class SettingActivity extends AppCompatActivity
 		Button start_purple = (Button)findViewById(R.id.color_start_purple);
 		start_purple.setTransitionName("start_purple");
 		starts.add(start_purple);
+
+
+		RadioButton button_50 = (RadioButton)findViewById(R.id.example_speed_50);
+		RadioButton button_60 = (RadioButton)findViewById(R.id.example_speed_60);
+		example_speeds.add(button_50);
+		example_speeds.add(button_60);
+
+
+		RadioButton start_normal = (RadioButton)findViewById(R.id.example_start_normal);
+		RadioButton start_checked = (RadioButton)findViewById(R.id.example_start_checked);
+		RadioButton start_started = (RadioButton)findViewById(R.id.example_start_started);
+		example_starts.add(start_normal);
+		example_starts.add(start_checked);
+		example_starts.add(start_started);
 
 		for (Button button : speeds)
 			button.setOnClickListener(new OnSpeedClicked());
@@ -145,6 +163,23 @@ public class SettingActivity extends AppCompatActivity
 		public void onClick(View v)
 		{
 			speed_drawable = getButtonDrawableId(v.getTransitionName());
+
+			int speed_text_color = Color.rgb(255, 255, 255);
+
+			boolean isSpeedButtonYellow = false;
+			if (speed_drawable == R.drawable.speed_button_yellow)
+				isSpeedButtonYellow = true;
+
+			for (RadioButton button : example_speeds)
+			{
+				button.setBackground(getDrawable(speed_drawable));
+				button.setTextColor(speed_text_color);
+
+				if (isSpeedButtonYellow && button.isChecked())
+					button.setTextColor(Color.rgb(0, 0, 0));
+				else
+					button.setTextColor(Color.rgb(255, 255, 255));
+			}
 		}
 	}
 
@@ -155,6 +190,23 @@ public class SettingActivity extends AppCompatActivity
 		public void onClick(View v)
 		{
 			start_drawable = getButtonDrawableId(v.getTransitionName());
+
+			int start_text_color = Color.rgb(255, 255, 255);
+
+			boolean isStartButtonYellow = false;
+			if (start_drawable == R.drawable.start_button_yellow)
+				isStartButtonYellow = true;
+
+			for (RadioButton button : example_starts)
+			{
+				button.setBackground(getDrawable(start_drawable));
+				button.setTextColor(start_text_color);
+
+				if (isStartButtonYellow && button.isChecked())
+					button.setTextColor(Color.rgb(0, 0, 0));
+				else
+					button.setTextColor(Color.rgb(255, 255, 255));
+			}
 		}
 	}
 }

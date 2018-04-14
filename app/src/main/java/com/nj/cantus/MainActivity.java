@@ -319,10 +319,9 @@ public class MainActivity extends AppCompatActivity
 
 	@Override
 	protected void onDestroy() {
-		if (mGatt == null) {
-			return;
+		if (mGatt != null) {
+			mGatt.close();
 		}
-		mGatt.close();
 		mGatt = null;
 		super.onDestroy();
 	}

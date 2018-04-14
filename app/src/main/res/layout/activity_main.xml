@@ -13,60 +13,60 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/button_50"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:layout_gravity="fill"
+            android:layout_margin="5dp"
             android:background="@drawable/speed_button_pink"
             android:button="@android:color/transparent"
             android:gravity="center_vertical|center_horizontal"
-            android:layout_gravity="fill"
-            android:layout_margin="5dp"
             android:text="50"
-            android:textSize="20sp"
-            android:textColor="#fff"/>
+            android:textColor="#fff"
+            android:textSize="20sp"/>
 
         <RadioButton
             android:id="@+id/button_70"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:layout_gravity="fill"
+            android:layout_margin="5dp"
             android:background="@drawable/speed_button_pink"
             android:button="@android:color/transparent"
             android:gravity="center_vertical|center_horizontal"
-            android:layout_gravity="fill"
-            android:layout_margin="5dp"
             android:text="70"
-            android:textSize="20sp"
-            android:textColor="#fff"/>
+            android:textColor="#fff"
+            android:textSize="20sp"/>
 
         <RadioButton
             android:id="@+id/button_90"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:layout_gravity="fill"
+            android:layout_margin="5dp"
             android:background="@drawable/speed_button_pink"
             android:button="@android:color/transparent"
             android:gravity="center_vertical|center_horizontal"
-            android:layout_gravity="fill"
-            android:layout_margin="5dp"
             android:text="90"
-            android:textSize="20sp"
-            android:textColor="#fff"/>
+            android:textColor="#fff"
+            android:textSize="20sp"/>
 
         <RadioButton
             android:id="@+id/button_110"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:layout_gravity="fill"
+            android:layout_margin="5dp"
             android:background="@drawable/speed_button_pink"
             android:button="@android:color/transparent"
             android:gravity="center_vertical|center_horizontal"
-            android:layout_gravity="fill"
-            android:layout_margin="5dp"
             android:text="110"
-            android:textSize="20sp"
-            android:textColor="#fff"/>
+            android:textColor="#fff"
+            android:textSize="20sp"/>
     </LinearLayout>
 
 
