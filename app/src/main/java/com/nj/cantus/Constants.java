@@ -20,4 +20,7 @@ public class Constants
 	public static final String DEVICE_NAME = "device_name";
 	public static final String TOAST = "toast";
 
+	public static final String PREF = "cantus_pref";
+	public static final String PREF_SPEED = "speed_button";
+	public static final String PREF_START = "start_button";
 }

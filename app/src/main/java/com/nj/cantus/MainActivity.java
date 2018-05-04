@@ -19,6 +19,7 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
@@ -33,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -61,6 +63,8 @@ public class MainActivity extends AppCompatActivity
 	private ArrayList<RadioButton> speedButtons = new ArrayList<>();
 	private ArrayList<RadioButton> lButtons = new ArrayList<>();
 	private RadioButton startButton;
+	private RadioButton l1Button;
+	private RadioButton l2Button;
 	private static boolean isSpeedButtonYellow = false;
 	private static boolean isStartButtonYellow = false;
 
@@ -92,11 +96,15 @@ public class MainActivity extends AppCompatActivity
 	private ScanSettings settings;
 	private List<ScanFilter> filters;
 	private BluetoothGatt mGatt;
+	private SharedPreferences setting;
+	private boolean isL1Checked = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		instance = this;
 		super.onCreate(savedInstanceState);
+		setting = getSharedPreferences(Constants.PREF, 0);
+
 		setContentView(R.layout.activity_main);
 		mHandler = new Handler();
 		if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -107,7 +115,6 @@ public class MainActivity extends AppCompatActivity
 		final BluetoothManager bluetoothManager =
 			(BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 		mBluetoothAdapter = bluetoothManager.getAdapter();
-
 
 		RadioButton button_50 = (RadioButton)findViewById(R.id.button_50);
 		button_50.setTransitionName("1");
@@ -127,10 +134,11 @@ public class MainActivity extends AppCompatActivity
 		button_120.setTransitionName("8");
 
 
-		RadioButton l1Button = (RadioButton)findViewById(R.id.button_L1);
-		l1Button.setTransitionName("a");
-		RadioButton l2Button = (RadioButton)findViewById(R.id.button_L2);
-		l2Button.setTransitionName("b");
+		// 추후변경: L1, L2 버튼 입력값
+		l1Button = (RadioButton)findViewById(R.id.button_L1);
+		l1Button.setTransitionName("b");
+		l2Button = (RadioButton)findViewById(R.id.button_L2);
+		l2Button.setTransitionName("c");
 
 		speedButtons.add(button_50);
 		speedButtons.add(button_60);
@@ -147,8 +155,8 @@ public class MainActivity extends AppCompatActivity
 		for (RadioButton button : speedButtons)
 			button.setOnClickListener(new SpeedButtonClickListener());
 
-		for (RadioButton button : lButtons)
-			button.setOnClickListener(new LButtonClickListener());
+		l1Button.setOnClickListener(new L1ButtonClickListener());
+		l2Button.setOnClickListener(new L2ButtonClickListener());
 
 		button_50.callOnClick();
 		l1Button.callOnClick();
@@ -217,10 +225,17 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View v)
 			{
-				Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
-				startActivity(intent);
+				if (!isTimerRunning)
+				{
+					Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+					startActivity(intent);
+				}
 			}
 		});
+
+		int speed = setting.getInt(Constants.PREF_SPEED, 0);
+		int start = setting.getInt(Constants.PREF_START, 0);
+		update_button_drawables(speed, start);
 	}
 
 	private void updateStartButtonState()
@@ -245,7 +260,7 @@ public class MainActivity extends AppCompatActivity
 			if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
 			{
 				System.out.println("coarse location permission granted");
-				scanLeDevice(true);
+				scanLeDevice(false);
 			}
 			else
 			{
@@ -305,7 +320,7 @@ public class MainActivity extends AppCompatActivity
 					.build();
 				filters = new ArrayList<ScanFilter>();
 			}
-			scanLeDevice(true);
+			scanLeDevice(false);
 		}
 	}
 
@@ -341,44 +356,47 @@ public class MainActivity extends AppCompatActivity
 				int speed_drawable = res.getInt("speed_color");
 				int start_drawable = res.getInt("start_color");
 
-				if (speed_drawable != 0)
-				{
-					int speed_text_color = Color.rgb(255, 255, 255);
-
-					if (speed_drawable == R.drawable.speed_button_yellow)
-						isSpeedButtonYellow = true;
-
-					for (RadioButton button : speedButtons)
-					{
-						button.setBackground(getDrawable(speed_drawable));
-						button.setTextColor(speed_text_color);
-
-						if (isSpeedButtonYellow && button.isChecked())
-							button.setTextColor(Color.rgb(0, 0, 0));
-						else
-							button.setTextColor(Color.rgb(255, 255, 255));
-					}
-				}
-
-				if (start_drawable != 0)
-				{
-					int start_text_color = Color.rgb(255, 255, 255);
-
-					if (start_drawable == R.drawable.start_button_yellow)
-						isStartButtonYellow = true;
-
-					startButton.setBackground(getDrawable(start_drawable));
-					startButton.setTextColor(start_text_color);
-					updateStartButtonState();
-				}
+				update_button_drawables(speed_drawable, start_drawable);
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	public void scanLeDevice(final boolean enable) {
-		setConnectedStatus(enable);
+	private void update_button_drawables(int speed_drawable, int start_drawable)
+	{
+		if (speed_drawable != 0)
+		{
+			int speed_text_color = Color.rgb(255, 255, 255);
 
+			if (speed_drawable == R.drawable.speed_button_yellow)
+				isSpeedButtonYellow = true;
+
+			for (RadioButton button : speedButtons)
+			{
+				button.setBackground(getDrawable(speed_drawable));
+				button.setTextColor(speed_text_color);
+
+				if (isSpeedButtonYellow && button.isChecked())
+					button.setTextColor(Color.rgb(0, 0, 0));
+				else
+					button.setTextColor(Color.rgb(255, 255, 255));
+			}
+		}
+
+		if (start_drawable != 0)
+		{
+			int start_text_color = Color.rgb(255, 255, 255);
+
+			if (start_drawable == R.drawable.start_button_yellow)
+				isStartButtonYellow = true;
+
+			startButton.setBackground(getDrawable(start_drawable));
+			startButton.setTextColor(start_text_color);
+			updateStartButtonState();
+		}
+	}
+
+	public void scanLeDevice(final boolean enable) {
 		runOnUiThread(new Runnable()
 		{
 			@Override
@@ -464,6 +482,7 @@ public class MainActivity extends AppCompatActivity
 			Log.i("onConnectionStateChange", "Status: " + status);
 			switch (newState) {
 			case BluetoothProfile.STATE_CONNECTED:
+				setConnectedStatus(true);
 				Log.i("gattCallback", "STATE_CONNECTED");
 				gatt.discoverServices();
 				break;
@@ -617,7 +636,8 @@ public class MainActivity extends AppCompatActivity
 				{
 					if (mBluetoothAdapter.isEnabled())
 					{
-						setConnectedStatus(false);
+						// 추후변경: Disconnect 값
+						sendCharacter("1");
 						mBluetoothAdapter.disable();
 						mGatt.close();
 						mGatt = null;
@@ -636,9 +656,12 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View view)
 			{
-				Intent i = new Intent(MainActivity.this, SettingActivity.class);
-				startActivityForResult(i, 222);
-				overridePendingTransition(R.anim.activity_slide_in, R.anim.activity_slide_out);
+				if (!isTimerRunning)
+				{
+					Intent i = new Intent(MainActivity.this, SettingActivity.class);
+					startActivityForResult(i, 222);
+					overridePendingTransition(R.anim.activity_slide_in, R.anim.activity_slide_out);
+				}
 			}
 		});
 
@@ -688,7 +711,7 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
-	private class LButtonClickListener implements View.OnClickListener{
+	private class L1ButtonClickListener implements View.OnClickListener{
 
 		@Override
 		public void onClick(View v)
@@ -701,6 +724,36 @@ public class MainActivity extends AppCompatActivity
 			}
 
 			((RadioButton)v).setChecked(true);
+
+			if (isTimerRunning) {
+				l1Button.setChecked(isL1Checked);
+				l2Button.setChecked(!isL1Checked);
+			}
+			else
+				isL1Checked = true;
+		}
+	}
+
+	private class L2ButtonClickListener implements View.OnClickListener{
+
+		@Override
+		public void onClick(View v)
+		{
+			lValue = v.getTransitionName();
+			sendCharacter(lValue);
+			for (RadioButton button : lButtons)
+			{
+				button.setChecked(false);
+			}
+
+			((RadioButton)v).setChecked(true);
+
+			if (isTimerRunning) {
+				l1Button.setChecked(isL1Checked);
+				l2Button.setChecked(!isL1Checked);
+			}
+			else
+				isL1Checked = false;
 		}
 	}
 

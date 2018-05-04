@@ -30,7 +30,7 @@ public class BluetoothBroadcastReceiver extends BroadcastReceiver
 					@Override
 					public void run() {
 						if (MainActivity.i() != null)
-							MainActivity.i().scanLeDevice(true);
+							MainActivity.i().scanLeDevice(false);
 					}}, 500);
 			}
 			break;

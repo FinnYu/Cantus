@@ -1,6 +1,7 @@
 package com.nj.cantus;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -32,11 +34,14 @@ public class SettingActivity extends AppCompatActivity
 	private ArrayList<RadioButton> example_speeds = new ArrayList<>();
 	private ArrayList<RadioButton> example_starts = new ArrayList<>();
 
+	private SharedPreferences setting;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 
+		setting = getSharedPreferences(Constants.PREF, 0);
 		setContentView(R.layout.setting);
 
 		Button speed_pink = (Button)findViewById(R.id.color_speed_pink);
@@ -163,6 +168,9 @@ public class SettingActivity extends AppCompatActivity
 		public void onClick(View v)
 		{
 			speed_drawable = getButtonDrawableId(v.getTransitionName());
+			SharedPreferences.Editor editor = setting.edit();
+			editor.putInt(Constants.PREF_SPEED, speed_drawable);
+			editor.apply();
 
 			int speed_text_color = Color.rgb(255, 255, 255);
 
@@ -190,6 +198,9 @@ public class SettingActivity extends AppCompatActivity
 		public void onClick(View v)
 		{
 			start_drawable = getButtonDrawableId(v.getTransitionName());
+			SharedPreferences.Editor editor = setting.edit();
+			editor.putInt(Constants.PREF_START, start_drawable);
+			editor.apply();
 
 			int start_text_color = Color.rgb(255, 255, 255);
 
