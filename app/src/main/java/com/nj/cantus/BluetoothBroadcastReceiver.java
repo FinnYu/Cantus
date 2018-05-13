@@ -30,7 +30,7 @@ public class BluetoothBroadcastReceiver extends BroadcastReceiver
 					@Override
 					public void run() {
 						if (MainActivity.i() != null)
-							MainActivity.i().scanLeDevice(false);
+							MainActivity.i().scanLeDevice(true);
 					}}, 500);
 			}
 			break;
@@ -41,6 +41,15 @@ public class BluetoothBroadcastReceiver extends BroadcastReceiver
 
 			Toast.makeText(context, "to "+bluetoothDevice.getName() + " : " + state,
 				Toast.LENGTH_SHORT).show();
+			if (state == BluetoothAdapter.STATE_ON)
+			{
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (MainActivity.i() != null)
+							MainActivity.i().scanLeDevice(true);
+					}}, 500);
+			}
 			break;
 		}
 	}

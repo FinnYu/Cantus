@@ -169,21 +169,25 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View v)
 			{
-				sendCharacter("s");
-
-
-				if (isTimerRunning)
+				if (connected)
 				{
-					startButton.setText("START");
-					cancelTimer();
+					sendCharacter("s");
+
+					if (isTimerRunning)
+					{
+						startButton.setText("START");
+						cancelTimer();
+					}
+					else
+					{
+						sendCharacter(speedValue);
+						startButton.setText("STOP");
+						startTimer();
+					}
+					updateStartButtonState();
 				}
 				else
-				{
-					sendCharacter(speedValue);
-					startButton.setText("STOP");
-					startTimer();
-				}
-				updateStartButtonState();
+					((RadioButton)v).setChecked(false);
 			}
 		});
 		updateStartButtonState();
@@ -260,7 +264,7 @@ public class MainActivity extends AppCompatActivity
 			if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
 			{
 				System.out.println("coarse location permission granted");
-				scanLeDevice(false);
+				scanLeDevice(true);
 			}
 			else
 			{
@@ -320,7 +324,7 @@ public class MainActivity extends AppCompatActivity
 					.build();
 				filters = new ArrayList<ScanFilter>();
 			}
-			scanLeDevice(false);
+			scanLeDevice(true);
 		}
 	}
 
@@ -632,19 +636,20 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View view)
 			{
-				if (mBluetoothAdapter != null && mGatt != null)
+				if (mBluetoothAdapter != null)
 				{
 					if (mBluetoothAdapter.isEnabled())
 					{
 						// 추후변경: Disconnect 값
 						sendCharacter("1");
 						mBluetoothAdapter.disable();
-						mGatt.close();
-						mGatt = null;
+						if (mGatt != null)
+							mGatt.close();
 					}
 					else
 					{
 						mBluetoothAdapter.enable();
+						scanLeDevice(true);
 					}
 				}
 			}
