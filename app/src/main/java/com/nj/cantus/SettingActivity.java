@@ -40,6 +40,7 @@ public class SettingActivity extends AppCompatActivity
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		setting = getSharedPreferences(Constants.PREF, 0);
 		setContentView(R.layout.setting);

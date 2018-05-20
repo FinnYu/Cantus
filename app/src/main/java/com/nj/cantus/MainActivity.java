@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		instance = this;
 		super.onCreate(savedInstanceState);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setting = getSharedPreferences(Constants.PREF, 0);
 
 		setContentView(R.layout.activity_main);
@@ -338,6 +339,9 @@ public class MainActivity extends AppCompatActivity
 
 	@Override
 	protected void onDestroy() {
+		// 추후변경: 앱 종료 값
+		sendCharacter("0");
+
 		if (mGatt != null) {
 			mGatt.close();
 		}
@@ -611,7 +615,7 @@ public class MainActivity extends AppCompatActivity
 	static final int REQUEST_TAKE_PHOTO = 1;
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
+	public boolean onCreateOptionsMenu(final Menu menu)
 	{
 		actionBar = getSupportActionBar();
 
@@ -679,7 +683,7 @@ public class MainActivity extends AppCompatActivity
 
 	private void sendCharacter(String c)
 	{
-		if (mGatt != null)
+		if (mGatt != null && characteristic != null)
 		{
 			characteristic.setValue(c);
 			mGatt.writeCharacteristic(characteristic);
@@ -722,7 +726,6 @@ public class MainActivity extends AppCompatActivity
 		public void onClick(View v)
 		{
 			lValue = v.getTransitionName();
-			sendCharacter(lValue);
 			for (RadioButton button : lButtons)
 			{
 				button.setChecked(false);
@@ -731,6 +734,7 @@ public class MainActivity extends AppCompatActivity
 			((RadioButton)v).setChecked(true);
 
 			if (isTimerRunning) {
+				sendCharacter(lValue);
 				l1Button.setChecked(isL1Checked);
 				l2Button.setChecked(!isL1Checked);
 			}
@@ -745,7 +749,6 @@ public class MainActivity extends AppCompatActivity
 		public void onClick(View v)
 		{
 			lValue = v.getTransitionName();
-			sendCharacter(lValue);
 			for (RadioButton button : lButtons)
 			{
 				button.setChecked(false);
@@ -754,6 +757,7 @@ public class MainActivity extends AppCompatActivity
 			((RadioButton)v).setChecked(true);
 
 			if (isTimerRunning) {
+				sendCharacter(lValue);
 				l1Button.setChecked(isL1Checked);
 				l2Button.setChecked(!isL1Checked);
 			}
