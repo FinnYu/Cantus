@@ -43,6 +43,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity
 	private boolean isTimerRunning = false;
 
 	private Handler timerHandler = new Handler();
+	private BluetoothDevice btDevice;
 
 	Runnable timerRunnable = new Runnable() {
 		@Override
@@ -172,6 +174,7 @@ public class MainActivity extends AppCompatActivity
 			{
 				if (connected)
 				{
+					sendCharacter(lValue);
 					sendCharacter("s");
 
 					if (isTimerRunning)
@@ -340,7 +343,8 @@ public class MainActivity extends AppCompatActivity
 	@Override
 	protected void onDestroy() {
 		// 추후변경: 앱 종료 값
-		sendCharacter("0");
+		if (isTimerRunning)
+			sendCharacter("s");
 
 		if (mGatt != null) {
 			mGatt.close();
@@ -444,7 +448,7 @@ public class MainActivity extends AppCompatActivity
 		public void onScanResult(int callbackType, ScanResult result) {
 			Log.i("callbackType", String.valueOf(callbackType));
 			Log.i("result", result.toString());
-			BluetoothDevice btDevice = result.getDevice();
+			btDevice = result.getDevice();
 			if (btDevice != null && btDevice.getName() != null && btDevice.getName().contains("HM"))
 				connectToDevice(btDevice);
 		}
@@ -480,7 +484,7 @@ public class MainActivity extends AppCompatActivity
 	public void connectToDevice(BluetoothDevice device) {
 		if (mGatt == null) {
 			mGatt = device.connectGatt(this, false, gattCallback);
-			scanLeDevice(false);// will stop after first device detection
+//			scanLeDevice(false);// will stop after first device detection
 		}
 	}
 
@@ -515,7 +519,7 @@ public class MainActivity extends AppCompatActivity
 				Toast.makeText(MainActivity.this, "Characteristic Not Found!", Toast.LENGTH_SHORT).show();
 				finish();
 			}
-			setConnectedStatus(true);
+//			setConnectedStatus(true);
 			Log.i("onServicesDiscovered", services.toString());
 		}
 
@@ -607,10 +611,10 @@ public class MainActivity extends AppCompatActivity
 	@Override
 	protected void onStop() {
 		super.onStop();
-		isTimerRunning = false;
-		resetTimer();
-		runOnUiThread(timerRunnable);
-		timerHandler.removeCallbacks(timerRunnable);
+//		isTimerRunning = false;
+//		resetTimer();
+//		runOnUiThread(timerRunnable);
+//		timerHandler.removeCallbacks(timerRunnable);
 	}
 	static final int REQUEST_TAKE_PHOTO = 1;
 
@@ -640,21 +644,24 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View view)
 			{
-				if (mBluetoothAdapter != null)
+				if (connected)
 				{
-					if (mBluetoothAdapter.isEnabled())
+					// 추후변경: Disconnect 값
+					if (isTimerRunning)
 					{
-						// 추후변경: Disconnect 값
-						sendCharacter("1");
-						mBluetoothAdapter.disable();
-						if (mGatt != null)
-							mGatt.close();
+						sendCharacter("s");
+						startButton.setText("START");
+						cancelTimer();
 					}
-					else
+					if (mGatt != null)
 					{
-						mBluetoothAdapter.enable();
-						scanLeDevice(true);
+						mGatt.disconnect();
+						setConnectedStatus(false);
 					}
+				}
+				else
+				{
+					connectToDevice(btDevice);
 				}
 			}
 		});
@@ -685,6 +692,14 @@ public class MainActivity extends AppCompatActivity
 	{
 		if (mGatt != null && characteristic != null)
 		{
+			try
+			{
+				Thread.sleep(10);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 			characteristic.setValue(c);
 			mGatt.writeCharacteristic(characteristic);
 		}
@@ -734,12 +749,14 @@ public class MainActivity extends AppCompatActivity
 			((RadioButton)v).setChecked(true);
 
 			if (isTimerRunning) {
-				sendCharacter(lValue);
 				l1Button.setChecked(isL1Checked);
 				l2Button.setChecked(!isL1Checked);
 			}
 			else
+			{
 				isL1Checked = true;
+				sendCharacter(lValue);
+			}
 		}
 	}
 
@@ -757,12 +774,14 @@ public class MainActivity extends AppCompatActivity
 			((RadioButton)v).setChecked(true);
 
 			if (isTimerRunning) {
-				sendCharacter(lValue);
 				l1Button.setChecked(isL1Checked);
 				l2Button.setChecked(!isL1Checked);
 			}
 			else
+			{
 				isL1Checked = false;
+				sendCharacter(lValue);
+			}
 		}
 	}
 
