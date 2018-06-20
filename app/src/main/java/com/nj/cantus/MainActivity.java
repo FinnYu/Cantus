@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
 
 	private TextView timerView;
 	private TextView bluetoothTextView;
-	private String connectionStatus = "CONNECT";
+	private String connectionStatus = "DISCONNECTED";
 	private int connectionColor = Color.WHITE;
 	private int elapsedTime = 0;
 	private boolean isTimerRunning = false;
@@ -180,7 +180,8 @@ public class MainActivity extends AppCompatActivity
 					if (isTimerRunning)
 					{
 						startButton.setText("START");
-						cancelTimer();
+						// STOP 시 타이머 리셋
+//						cancelTimer();
 					}
 					else
 					{
@@ -449,6 +450,7 @@ public class MainActivity extends AppCompatActivity
 			Log.i("callbackType", String.valueOf(callbackType));
 			Log.i("result", result.toString());
 			btDevice = result.getDevice();
+			// Todo: 블루투스 모듈 이름
 			if (btDevice != null && btDevice.getName() != null && btDevice.getName().contains("HM"))
 				connectToDevice(btDevice);
 		}
@@ -543,6 +545,7 @@ public class MainActivity extends AppCompatActivity
 		int sec = r;
 		timerView.setText(String.format(Locale.KOREA, "TIME\t\t%02d:%02d:%02d", hour, minute, sec));
 
+		// Todo: 시간 흐름 경고 제한 시간
 		if (time >= 60 * 30)
 			timerView.setTextColor(Color.YELLOW);
 		else
@@ -559,18 +562,18 @@ public class MainActivity extends AppCompatActivity
 		updateStartButtonState();
 	}
 
-	private void setConnectedStatus(boolean connected)
+	private void setConnectedStatus(boolean connectedStatus)
 	{
 		updateStartButtonState();
-		this.connected = connected;
+		this.connected = connectedStatus;
 
-		if (connected) {
+		if (connectedStatus) {
 			runOnUiThread(new Runnable()
 			{
 				@Override
 				public void run()
 				{
-					connectionStatus = "DISCONNECT";
+					connectionStatus = "CONNECTED";
 					connectionColor = Color.RED;
 					applyConnectionStatus();
 				}
@@ -583,7 +586,7 @@ public class MainActivity extends AppCompatActivity
 				@Override
 				public void run()
 				{
-					connectionStatus = "CONNECT";
+					connectionStatus = "DISCONNECTED";
 					connectionColor = Color.WHITE;
 					applyConnectionStatus();
 				}
@@ -635,36 +638,36 @@ public class MainActivity extends AppCompatActivity
 		View actionBarView = inflater.inflate(R.layout.layout_actionbar, null);
 		actionBar.setCustomView(actionBarView);
 
-		View bluetoothBtn = actionBarView.findViewById(R.id.btn_bluetooth);
 		View settingBtn = actionBarView.findViewById(R.id.btn_setting);
 
-		bluetoothBtn.setOnTouchListener(new ViewTouchListener());
-		bluetoothBtn.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View view)
-			{
-				if (connected)
-				{
-					// 추후변경: Disconnect 값
-					if (isTimerRunning)
-					{
-						sendCharacter("s");
-						startButton.setText("START");
-						cancelTimer();
-					}
-					if (mGatt != null)
-					{
-						mGatt.disconnect();
-						setConnectedStatus(false);
-					}
-				}
-				else
-				{
-					connectToDevice(btDevice);
-				}
-			}
-		});
+//		View bluetoothBtn = actionBarView.findViewById(R.id.btn_bluetooth);
+//		bluetoothBtn.setOnTouchListener(new ViewTouchListener());
+//		bluetoothBtn.setOnClickListener(new View.OnClickListener()
+//		{
+//			@Override
+//			public void onClick(View view)
+//			{
+//				if (connected)
+//				{
+//					// 추후변경: Disconnect 값
+//					if (isTimerRunning)
+//					{
+//						sendCharacter("s");
+//						startButton.setText("START");
+//						cancelTimer();
+//					}
+//					if (mGatt != null)
+//					{
+//						mGatt.disconnect();
+//						setConnectedStatus(false);
+//					}
+//				}
+//				else
+//				{
+//					connectToDevice(btDevice);
+//				}
+//			}
+//		});
 
 		settingBtn.setOnTouchListener(new ViewTouchListener());
 		settingBtn.setOnClickListener(new View.OnClickListener()

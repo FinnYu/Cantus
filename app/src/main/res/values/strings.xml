@@ -1,7 +1,7 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Cantus</string>
-    <string name="bluetooth">CONNECT</string>
+    <string name="bluetooth">DISCONNECTED</string>
     <string name="setting">SETTING</string>
     <string name="back">BACK</string>
 
