@@ -149,7 +149,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal"
@@ -157,7 +157,7 @@
 
         <RadioButton
             android:id="@+id/button_start"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_gravity="fill"
             android:layout_margin="5dp"

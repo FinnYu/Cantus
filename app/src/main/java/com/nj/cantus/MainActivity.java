@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
 	private TextView timerView;
 	private TextView bluetoothTextView;
 	private String connectionStatus = "DISCONNECTED";
-	private int connectionColor = Color.WHITE;
+	private int connectionColor = Color.RED;
 	private int elapsedTime = 0;
 	private boolean isTimerRunning = false;
 
@@ -182,6 +182,8 @@ public class MainActivity extends AppCompatActivity
 						startButton.setText("START");
 						// STOP 시 타이머 리셋
 //						cancelTimer();
+						isTimerRunning = false;
+						timerHandler.removeCallbacks(timerRunnable);
 					}
 					else
 					{
@@ -574,7 +576,7 @@ public class MainActivity extends AppCompatActivity
 				public void run()
 				{
 					connectionStatus = "CONNECTED";
-					connectionColor = Color.RED;
+					connectionColor = Color.BLUE;
 					applyConnectionStatus();
 				}
 			});
@@ -587,7 +589,7 @@ public class MainActivity extends AppCompatActivity
 				public void run()
 				{
 					connectionStatus = "DISCONNECTED";
-					connectionColor = Color.WHITE;
+					connectionColor = Color.RED;
 					applyConnectionStatus();
 				}
 			});
@@ -606,7 +608,6 @@ public class MainActivity extends AppCompatActivity
 
 	public void cancelTimer() {
 		resetTimer();
-		runOnUiThread(timerRunnable);
 		isTimerRunning = false;
 		timerHandler.removeCallbacks(timerRunnable);
 	}
@@ -743,7 +744,6 @@ public class MainActivity extends AppCompatActivity
 		@Override
 		public void onClick(View v)
 		{
-			lValue = v.getTransitionName();
 			for (RadioButton button : lButtons)
 			{
 				button.setChecked(false);
@@ -757,6 +757,8 @@ public class MainActivity extends AppCompatActivity
 			}
 			else
 			{
+				lValue = v.getTransitionName();
+				cancelTimer();
 				isL1Checked = true;
 				sendCharacter(lValue);
 			}
@@ -768,7 +770,6 @@ public class MainActivity extends AppCompatActivity
 		@Override
 		public void onClick(View v)
 		{
-			lValue = v.getTransitionName();
 			for (RadioButton button : lButtons)
 			{
 				button.setChecked(false);
@@ -782,6 +783,8 @@ public class MainActivity extends AppCompatActivity
 			}
 			else
 			{
+				lValue = v.getTransitionName();
+				cancelTimer();
 				isL1Checked = false;
 				sendCharacter(lValue);
 			}
