@@ -608,7 +608,7 @@ public class MainActivity extends AppCompatActivity
 
 	public void startTimer() {
 		isTimerRunning = true;
-		timerHandler.postDelayed(timerRunnable, 1000);
+		timerHandler.postDelayed(timerRunnable, 0);
 	}
 
 	public void cancelTimer() {
