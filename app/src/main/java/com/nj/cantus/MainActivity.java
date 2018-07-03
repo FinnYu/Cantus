@@ -453,7 +453,7 @@ public class MainActivity extends AppCompatActivity
 			Log.i("result", result.toString());
 			btDevice = result.getDevice();
 			// Todo: 블루투스 모듈 이름
-			if (btDevice != null && btDevice.getName() != null && btDevice.getName().contains("HM"))
+			if (btDevice != null && btDevice.getName() != null && btDevice.getName().contains("CANTUS85"))
 				connectToDevice(btDevice);
 		}
 
@@ -545,13 +545,17 @@ public class MainActivity extends AppCompatActivity
 		int minute = r / 60;
 		r -= minute * 60;
 		int sec = r;
-		timerView.setText(String.format(Locale.KOREA, "TIME\t\t%02d:%02d:%02d", hour, minute, sec));
 
-		// Todo: 시간 흐름 경고 제한 시간
-		if (time >= 60 * 30)
-			timerView.setTextColor(Color.YELLOW);
-		else
-			timerView.setTextColor(Color.WHITE);
+		if (timerView != null)
+		{
+			timerView.setText(String.format(Locale.KOREA, "TIME\t\t%02d:%02d:%02d", hour, minute, sec));
+
+			// Todo: 시간 흐름 경고 제한 시간
+			if (time >= 60 * 30)
+				timerView.setTextColor(Color.YELLOW);
+			else
+				timerView.setTextColor(Color.WHITE);
+		}
 	}
 
 	private void applyConnectionStatus()
@@ -599,6 +603,7 @@ public class MainActivity extends AppCompatActivity
 	public void resetTimer()
 	{
 		elapsedTime = 0;
+		setTime(elapsedTime);
 	}
 
 	public void startTimer() {

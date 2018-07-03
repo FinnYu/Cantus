@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
+    android:gravity="center_horizontal"
     tools:context="com.nj.cantus.SettingActivity">
 
     <LinearLayout
@@ -15,7 +16,7 @@
         android:orientation="horizontal"
         android:id="@+id/group1"
         android:layout_marginTop="40dp"
-        android:layout_marginStart="20dp">
+        android:layout_marginStart="10dp">
 
         <Button
             android:id="@+id/color_speed_pink"
@@ -53,7 +54,7 @@
         android:layout_gravity="start"
         android:id="@+id/group2"
         android:orientation="horizontal"
-        android:layout_marginStart="20dp">
+        android:layout_marginStart="10dp">
 
 
         <Button
@@ -87,12 +88,12 @@
 
 
     <LinearLayout
-        android:layout_toRightOf="@id/group1"
+        android:layout_toEndOf="@id/group1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="30dp"
+        android:layout_marginStart="15dp"
         android:orientation="vertical">
 
         <RadioButton
@@ -124,10 +125,11 @@
 
     <RelativeLayout
         android:layout_below="@id/group2"
-        android:layout_width="match_parent"
+        android:layout_width="330dp"
         android:layout_height="2dp"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
+        android:layout_marginStart="10dp"
         android:id="@+id/line_group"
         android:background="@android:color/white"/>
 
@@ -138,7 +140,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:orientation="horizontal"
-        android:layout_marginStart="20dp">
+        android:layout_marginStart="10dp">
 
         <Button
             android:id="@+id/color_start_pink"
@@ -176,7 +178,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:orientation="horizontal"
-        android:layout_marginStart="20dp">
+        android:layout_marginStart="10dp">
 
 
         <Button
@@ -213,7 +215,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="5dp"
         android:orientation="vertical">
 
 
